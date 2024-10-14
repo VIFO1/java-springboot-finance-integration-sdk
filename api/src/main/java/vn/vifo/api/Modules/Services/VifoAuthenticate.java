@@ -4,13 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.http.HttpStatus;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import vn.vifo.api.Interfaces.VifoAutheticateInterface;
+import vn.vifo.api.Modules.Converters.AuthenticateResponse;
 
 public class VifoAuthenticate implements VifoAutheticateInterface {
     private VifoSendRequest sendRequest;
+    private ObjectMapper objectMapper;
 
     public VifoAuthenticate(VifoSendRequest sendRequest) {
         this.sendRequest = sendRequest;
+        this.objectMapper = new ObjectMapper();
     }
 
     public List<String> validateLoginInput(Map<String, String> headers, String username, String password) {
@@ -35,13 +42,39 @@ public class VifoAuthenticate implements VifoAutheticateInterface {
                 "password", password);
     }
 
-    public Map<String, Object> authenticateUser(Map<String, String> headers, String username, String password) {
+    public AuthenticateResponse authenticateUser(Map<String, String> headers, String username, String password) {
         String endpoint = "/v1/clients/web/admin/login";
         List<String> errors = validateLoginInput(headers, username, password);
         if (!errors.isEmpty()) {
-            return Map.of("errors", errors);
+            return AuthenticateResponse.builder()
+                    .body(AuthenticateResponse.Body.builder()
+                            .errors(String.join(",", errors))
+                            .build())
+                    .build();
         }
         Map<String, Object> body = buildLoginBody(username, password);
-        return this.sendRequest.sendRequest("POST", endpoint, headers, body);
+        try {
+            Map<String, Object> apiResponse = this.sendRequest.sendRequest("POST", endpoint, headers, body);
+
+            HttpStatus httpStatusCode = (HttpStatus) apiResponse.get("status_code");
+
+            if (httpStatusCode == null || !httpStatusCode.equals(HttpStatus.OK)) {
+                String errorMessage = (String) apiResponse.get("errors");
+
+                return AuthenticateResponse.builder()
+                        .statusCode(httpStatusCode)
+                        .body(AuthenticateResponse.Body.builder()
+                                .message("errorMessage" + errorMessage)
+                                .build())
+                        .build();
+            }
+            String jsonResponse = objectMapper.writeValueAsString(apiResponse);
+            AuthenticateResponse authenticateResponse = objectMapper.readValue(jsonResponse,
+                    AuthenticateResponse.class);
+            return authenticateResponse;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

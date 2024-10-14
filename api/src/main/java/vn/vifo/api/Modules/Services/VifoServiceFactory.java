@@ -1,9 +1,23 @@
 package vn.vifo.api.Modules.Services;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import org.springframework.http.HttpStatus;
+
 import vn.vifo.api.Interfaces.QRTypeOrder;
 import vn.vifo.api.Interfaces.VifoServiceFactoryInterface;
+import vn.vifo.api.Modules.Converters.ApproveTransferMoneyResponse;
+import vn.vifo.api.Modules.Converters.AuthenticateResponse;
+import vn.vifo.api.Modules.Converters.BankResponse;
+import vn.vifo.api.Modules.Converters.BeneficiaryNameResponse;
+import vn.vifo.api.Modules.Converters.CreateRevaOrderResponse;
+import vn.vifo.api.Modules.Converters.CreateSevaOrderResponse;
+import vn.vifo.api.Modules.Converters.OtherRequestResponse;
+import vn.vifo.api.Modules.Converters.BeneficiaryNameResponse.Body;
+import vn.vifo.api.Modules.Converters.TransferMoneyResponse;
+import vn.vifo.api.Modules.Converters.WebhookResponse;
 
 public class VifoServiceFactory implements VifoServiceFactoryInterface {
     private VifoSendRequest sendRequest;
@@ -63,76 +77,86 @@ public class VifoServiceFactory implements VifoServiceFactoryInterface {
         return new HashMap<>(this.headers);
     }
 
-    public Map<String, Object> performUserAuthentication(String username, String password) {
-        Map<String, Object> response = authenticate.authenticateUser(this.headersLogin, username, password);
-        if (response.containsKey("errors")) {
-            return Map.of(
-                    "status", "errors",
-                    "message", "Authentication failed",
-                    "body", response.get("body"));
+    public AuthenticateResponse performUserAuthentication(String username, String password) {
+        AuthenticateResponse response = authenticate.authenticateUser(this.headersLogin, username, password);
+        if (response == null) {
+            return AuthenticateResponse.builder()
+                    .body(AuthenticateResponse.Body.builder()
+                            .message(response != null ? response.getBody().getMessage() : "Unknown error")
+                            .build())
+                    .build();
         }
 
         return response;
     }
 
-    public Map<String, Object> fetchBankInformation() {
+    public BankResponse fetchBankInformation() {
         Map<String, String> headers = this.getAuthorizationHeaders("user");
-        Map<String, Object> response = this.bank.getBank(headers);
-
-        if (response.containsKey("errors")) {
-            return Map.of(
-                    "status", "errors",
-                    "message", response.get("errors"),
-                    "status_code", response.get("status_code"));
+        BankResponse response = this.bank.getBank(headers);
+        if (response == null) {
+            return BankResponse.builder()
+                    .body(BankResponse.Body.builder()
+                            .message(response != null ? response.getBody().getMessage() : "Unknown error")
+                            .build())
+                    .build();
         }
         return response;
     }
 
-    public Map<String, Object> fetchBeneficiaryName(Map<String, Object> body) {
+    public BeneficiaryNameResponse fetchBeneficiaryName(Map<String, Object> body) {
         Map<String, String> headers = this.getAuthorizationHeaders("user");
         if (!body.containsKey("bank_code") || !body.containsKey("account_number")) {
-            return Map.of("status", "errors", "message", "Required fields missing: bank_code or account_number");
+            BeneficiaryNameResponse responseBody = BeneficiaryNameResponse.builder()
+                    .body(Body.builder()
+                            .success(false)
+                            .message("missing 'bank_code' or 'account_number")
+                            .build())
+                    .build();
+            return responseBody;
         }
         return this.bank.getBeneficiaryName(headers, body);
     }
 
-    public Map<String, Object> executeMoneyTransfer(Map<String, Object> body) {
+    public TransferMoneyResponse executeMoneyTransfer(Map<String, Object> body) {
         Map<String, String> headers = this.getAuthorizationHeaders("user");
 
-        Map<String, Object> response = this.transferMoney.createTransferMoney(headers, body);
-        if (response.containsKey("errors")) {
-            return Map.of(
-                    "status", "errors",
-                    "body", response.get("body"),
-                    "status_code", response.get("status_code"),
-                    "errors", response.get("errors"));
+        TransferMoneyResponse response = this.transferMoney.createTransferMoney(headers, body);
+        if (response.getBody() != null) {
+            return TransferMoneyResponse.builder()
+                    .statusCode(response.getStatusCode())
+                    .body(response.getBody())
+                    .build();
         }
         return response;
     }
 
-    public Map<String, Object> approveMoneyTransfer(String secretKey, String timestamp, Map<String, Object> body) {
+    public ApproveTransferMoneyResponse approveMoneyTransfer(String secretKey, String timestamp,
+            Map<String, Object> body) {
         Map<String, String> headers = this.getAuthorizationHeaders("admin");
         String requestSignature = this.approveTransferMoney.createSignature(body, secretKey, timestamp);
+        System.out.println(requestSignature);
         headers.put("x-request-timestamp", timestamp);
         headers.put("x-request-signature", requestSignature);
-        Map<String, Object> response = this.approveTransferMoney.approveTransfers(secretKey, timestamp, headers, body);
+        ApproveTransferMoneyResponse response = this.approveTransferMoney.approveTransfers(secretKey, timestamp,
+                headers, body);
 
-        if (response.containsKey("status_code")) {
-            return Map.of(
-                    "status_code", response.get("status_code"),
-                    "body", response.get("body"));
+        if (response.getStatusCode() == HttpStatus.OK) {
+            return ApproveTransferMoneyResponse.builder()
+                    .statusCode(response.getStatusCode())
+                    .body(response.getBody())
+                    .build();
         }
         return response;
     }
 
-    public Map<String, Object> processOtherRequest(String key) {
+    public OtherRequestResponse processOtherRequest(String key) {
         Map<String, String> headers = this.getAuthorizationHeaders("user");
-        Map<String, Object> response = this.otherRequest.checkOrderStatus(headers, key);
-        if (response.containsKey("status_code")) {
-            return Map.of(
-                    "status_code", response.get("status_code"),
-                    "body", response.get("body"),
-                    "data", "");
+        OtherRequestResponse response = this.otherRequest.checkOrderStatus(headers, key);
+        if (response.getStatusCode() == HttpStatus.OK) {
+            return OtherRequestResponse.builder()
+                    .statusCode(response.getStatusCode())
+                    .body(response.getBody())
+                    .build();
         }
         return response;
     }
@@ -147,7 +171,18 @@ public class VifoServiceFactory implements VifoServiceFactoryInterface {
         }
     }
 
-    public Map<String, Object> createRevaOrder(
+    public WebhookResponse convertObjectToWebhookResponse(Map<String, Object> response) {
+        WebhookResponse result = this.webhook.convertObject(response);
+
+        if (result.getActionName() == null || result.getData() == null) {
+            return WebhookResponse.builder()
+                    .errors("data conversion failed")
+                    .build();
+        }
+        return result;
+    }
+
+    public CreateRevaOrderResponse createRevaOrder(
             String fullname,
             String beneficiaryBankCode,
             String beneficiaryAccountNo,
@@ -179,16 +214,20 @@ public class VifoServiceFactory implements VifoServiceFactoryInterface {
         body.put("bank_detail", bankDetail);
         body.put("qr_type", qrType);
         body.put("end_date", endDate);
-        Map<String, Object> response = this.orderReva.createRevaOrder(headers, body);
-        if (response.containsKey("status_code")) {
-            return Map.of(
-                    "status_code", response.get("status_code"),
-                    "body", response.get("body"));
+
+        List<String> errors = this.orderReva.validateRequiredFields(fullname, distributorOrderNumber, phone,
+                finalAmount);
+        if (!errors.isEmpty()) {
+            return CreateRevaOrderResponse.builder()
+                    .errors(String.join("", errors))
+                    .build();
         }
+
+        CreateRevaOrderResponse response = this.orderReva.createRevaOrder(headers, body);
         return response;
     }
 
-    public Map<String, Object> createSevaOrder(
+    public CreateSevaOrderResponse createSevaOrder(
             String fullname,
             String beneficiaryBankCode,
             String beneficiaryAccountNo,
@@ -220,11 +259,12 @@ public class VifoServiceFactory implements VifoServiceFactoryInterface {
         body.put("bank_detail", bankDetail);
         body.put("qr_type", qrType);
         body.put("end_date", endDate);
-        Map<String, Object> response = this.orderSeva.createSevaOrder(headers, body);
-        if (response.containsKey("status_code")) {
-            return Map.of(
-                    "status_code", response.get("status_code"),
-                    "body", response.get("body"));
+        CreateSevaOrderResponse response = this.orderSeva.createSevaOrder(headers, body);
+        if (response.getStatusCode() == HttpStatus.CREATED) {
+            return CreateSevaOrderResponse.builder()
+                    .statusCode(response.getStatusCode())
+                    .body(response.getBody())
+                    .build();
         }
         return response;
     }

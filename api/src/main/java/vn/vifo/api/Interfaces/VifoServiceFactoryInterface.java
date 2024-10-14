@@ -2,6 +2,16 @@ package vn.vifo.api.Interfaces;
 
 import java.util.Map;
 
+import vn.vifo.api.Modules.Converters.ApproveTransferMoneyResponse;
+import vn.vifo.api.Modules.Converters.AuthenticateResponse;
+import vn.vifo.api.Modules.Converters.BankResponse;
+import vn.vifo.api.Modules.Converters.BeneficiaryNameResponse;
+import vn.vifo.api.Modules.Converters.CreateRevaOrderResponse;
+import vn.vifo.api.Modules.Converters.CreateSevaOrderResponse;
+import vn.vifo.api.Modules.Converters.OtherRequestResponse;
+import vn.vifo.api.Modules.Converters.TransferMoneyResponse;
+import vn.vifo.api.Modules.Converters.WebhookResponse;
+
 public interface VifoServiceFactoryInterface {
 
         public void setUserToken(String token);
@@ -10,22 +20,25 @@ public interface VifoServiceFactoryInterface {
 
         public Map<String, String> getAuthorizationHeaders(String type);
 
-        public Map<String, Object> performUserAuthentication(String username, String password);
+        public AuthenticateResponse performUserAuthentication(String username, String password);
 
-        public Map<String, Object> fetchBankInformation();
+        public BankResponse fetchBankInformation();
 
-        public Map<String, Object> fetchBeneficiaryName(Map<String, Object> body);
+        public BeneficiaryNameResponse fetchBeneficiaryName(Map<String, Object> body);
 
-        public Map<String, Object> executeMoneyTransfer(Map<String, Object> body);
+        public TransferMoneyResponse executeMoneyTransfer(Map<String, Object> body);
 
-        public Map<String, Object> approveMoneyTransfer(String secretKey, String timestamp, Map<String, Object> body);
+        public ApproveTransferMoneyResponse approveMoneyTransfer(String secretKey, String timestamp,
+                        Map<String, Object> body);
 
-        public Map<String, Object> processOtherRequest(String key);
+        public OtherRequestResponse processOtherRequest(String key);
+
+        public WebhookResponse convertObjectToWebhookResponse(Map<String, Object> response);
 
         public boolean verifyWebhookSignature(Map<String, Object> data, String requestSignature, String secretKey,
                         String timestamp);
 
-        public Map<String, Object> createRevaOrder(
+        public CreateRevaOrderResponse createRevaOrder(
                         String fullname,
                         String beneficiaryBankCode,
                         String beneficiaryAccountNo,
@@ -42,7 +55,7 @@ public interface VifoServiceFactoryInterface {
 
         );
 
-        public Map<String, Object> createSevaOrder(
+        public CreateSevaOrderResponse createSevaOrder(
                         String fullname,
                         String beneficiaryBankCode,
                         String beneficiaryAccountNo,

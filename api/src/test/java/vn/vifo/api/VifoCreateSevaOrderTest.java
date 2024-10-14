@@ -1,8 +1,8 @@
 package vn.vifo.api;
 
-import java.util.Map;
 
 import vn.vifo.api.Modules.Services.VifoSendRequest;
+import vn.vifo.api.Modules.Converters.CreateSevaOrderResponse;
 import vn.vifo.api.Modules.Services.VifoCreateSevaOrder;
 
 public class VifoCreateSevaOrderTest {
@@ -10,7 +10,7 @@ public class VifoCreateSevaOrderTest {
         VifoSendRequest sendRequest = new VifoSendRequest("dev");
         VifoCreateSevaOrder createSevaOrderTest = new VifoCreateSevaOrder(sendRequest);
 
-        Map<String, Object> test = createSevaOrderTest.createSevaOrder(null, null);
+        CreateSevaOrderResponse test = createSevaOrderTest.createSevaOrder(null, null);
         System.out.println(test);
     }
 }

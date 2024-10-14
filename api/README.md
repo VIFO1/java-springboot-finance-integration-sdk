@@ -21,7 +21,7 @@ ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.cl
 VifoServiceFactory vifoServiceFactory = context.getBean(VifoServiceFactory.class);
 
 4.Login
-Map<String,Object> authenticateUser = vifoServiceFactory.performUserAuthentication(String username, String password);
+AuthenticateResponse authenticateUser = vifoServiceFactory.performUserAuthentication(String username, String password);
 
 5.Methods for Token Setup
 vifoServiceFactory.setUserToken("your_user_token_here");
@@ -34,22 +34,25 @@ Using Tokens in Requests
 Once the tokens are set using the above methods, they will be automatically included in the headers for their respective requests.
 
 6.Get List of available Banks:
-Map<String,Object> bank = vifoServiceFactory.fetchBankInformation();
+BankResponse bank = vifoServiceFactory.fetchBankInformation();
 
 7.Get NAPAS Beneficiary Name:
-Map<String,Object> bank = vifoServiceFactory.fetchBeneficiaryName(Map<String,Object> body);
+BeneficiaryNameResponse bank = vifoServiceFactory.fetchBeneficiaryName(Map<String,Object> body);
 
 8.Create Transfer Money API:
-Map<String, Object> transferMoney = vifoServiceFactory.executeMoneyTransfer(Map<String,Object> body);
+TransferMoneyResponse transferMoney = vifoServiceFactory.executeMoneyTransfer(Map<String,Object> body);
 
 9.Bulk Approve Transfer Money API
-Map<String, Object> approveMoneyTransfer = vifoServiceFactory.approveMoneyTransfer(String secretKey, String timestamp, Map<String,Object> body );
+ApproveTransferMoneyResponse approveMoneyTransfer = vifoServiceFactory.approveMoneyTransfer(String secretKey, String timestamp, Map<String,Object> body );
 
 10.Others request:
-Map<String, Object> otherRequest = vifoServiceFactory.processOtherRequest(String key);
+OtherRequestResponse otherRequest = vifoServiceFactory.processOtherRequest(String key);
 
-11.Create Reva Order:
-Map<String, Object> createRevaOrder = vifoServiceFactory.createRevaOrder(
+11.Webhook Response Conversion
+WebhookResponse bank = vifoServiceFactory.convertObjectToWebhookResponse(jsonObject);
+
+12.Create Reva Order:
+CreateRevaOrderResponse createRevaOrder = vifoServiceFactory.createRevaOrder(
             String fullname,
             String beneficiaryBankCode,
             String beneficiaryAccountNo,
@@ -65,8 +68,8 @@ Map<String, Object> createRevaOrder = vifoServiceFactory.createRevaOrder(
             String endDate
 )
 
-12.Create Seva Order:
-Map<String, Object> createSevaOrder = vifoServiceFactory.createSevaOrder(
+13.Create Seva Order:
+CreateSevaOrderResponse createSevaOrder = vifoServiceFactory.createSevaOrder(
             String fullname,
             String beneficiaryBankCode,
             String beneficiaryAccountNo,

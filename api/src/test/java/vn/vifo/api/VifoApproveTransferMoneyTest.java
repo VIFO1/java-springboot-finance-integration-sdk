@@ -2,6 +2,7 @@ package vn.vifo.api;
 
 import java.util.Map;
 
+import vn.vifo.api.Modules.Converters.ApproveTransferMoneyResponse;
 import vn.vifo.api.Modules.Services.VifoApproveTransferMoney;
 import vn.vifo.api.Modules.Services.VifoSendRequest;
 
@@ -18,7 +19,7 @@ public class VifoApproveTransferMoneyTest {
             "ids", ids  
         );
         Map<String, String> headers = Map.of("","");
-        Map<String, Object> test = approveTransferMoney.approveTransfers(secretKey,timestamp,headers,body);
+        ApproveTransferMoneyResponse test = approveTransferMoney.approveTransfers(secretKey,timestamp,headers,body);
         String createSignatureTest  = approveTransferMoney.createSignature(body, secretKey, timestamp);
         System.out.println(test);
         System.out.println(createSignatureTest);

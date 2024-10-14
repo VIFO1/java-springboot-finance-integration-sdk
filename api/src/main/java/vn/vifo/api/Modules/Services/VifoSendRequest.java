@@ -6,6 +6,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -20,6 +21,7 @@ public class VifoSendRequest implements VifoSendRequestInterface {
         this.restTemplate = new RestTemplate();
     }
 
+    @SuppressWarnings("deprecation")
     public Map<String, Object> sendRequest(String method, String endpoint, Map<String, String> headers,
             Map<String, Object> body) {
         String url = this.baseUrl + endpoint;
@@ -36,9 +38,14 @@ public class VifoSendRequest implements VifoSendRequestInterface {
 
             return Map.of(
                     "status_code", responseEntity.getStatusCode(),
-                    "body", responseEntity.getBody());
-
+                    "body", responseEntity.getBody(),
+                    "http_code", responseEntity.getStatusCodeValue());
         } catch (HttpServerErrorException e) {
+            return Map.of(
+                    "errors", e.getMessage(),
+                    "status_code", e.getStatusCode(),
+                    "body", e.getResponseBodyAsString());
+        } catch (HttpClientErrorException e) {
             return Map.of(
                     "errors", e.getMessage(),
                     "status_code", e.getStatusCode(),
