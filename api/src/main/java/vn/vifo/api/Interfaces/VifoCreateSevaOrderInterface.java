@@ -1,10 +1,10 @@
 package vn.vifo.api.Interfaces;
 
-import java.util.Map;
+import java.util.HashMap;
 
-import vn.vifo.api.Modules.Converters.CreateSevaOrderResponse;
+import vn.vifo.api.Modules.DTO.CreateSevaOrderResponse;
 
 public interface VifoCreateSevaOrderInterface {
 
-    public CreateSevaOrderResponse createSevaOrder(Map<String, String> headers, Map<String, Object> body);
+    public CreateSevaOrderResponse createSevaOrder(HashMap<String, String> headers, HashMap<String, Object> body);
 }

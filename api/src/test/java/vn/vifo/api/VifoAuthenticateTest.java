@@ -1,8 +1,8 @@
 package vn.vifo.api;
 
-import java.util.Map;
+import java.util.HashMap;
 
-import vn.vifo.api.Modules.Converters.AuthenticateResponse;
+import vn.vifo.api.Modules.DTO.AuthenticateResponse;
 import vn.vifo.api.Modules.Services.VifoAuthenticate;
 import vn.vifo.api.Modules.Services.VifoSendRequest;
 
@@ -14,7 +14,7 @@ public class VifoAuthenticateTest {
         String username = "";
         String passsword = "";
     
-        Map<String, String> headers = Map.of("","");
+        HashMap<String, String> headers =null;
         AuthenticateResponse test = authenticate.authenticateUser(headers,username,passsword);
         System.out.println(test);
     }

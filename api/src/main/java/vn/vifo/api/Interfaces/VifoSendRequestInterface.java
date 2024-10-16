@@ -1,9 +1,10 @@
 package vn.vifo.api.Interfaces;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public interface VifoSendRequestInterface {
-    public Map<String, Object> sendRequest(String method, String endpoint, Map<String, String> headers,
-            Map<String, Object> body);
+    public HashMap<String, Object> sendRequest(String method, String endpoint, HashMap<String, String> headers,
+    HashMap<String, Object> body);
 
 }

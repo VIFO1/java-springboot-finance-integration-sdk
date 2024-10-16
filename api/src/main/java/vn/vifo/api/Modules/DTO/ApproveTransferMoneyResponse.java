@@ -1,4 +1,4 @@
-package vn.vifo.api.Modules.Converters;
+package vn.vifo.api.Modules.DTO;
 
 import org.springframework.http.HttpStatus;
 
@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import vn.vifo.api.Ultils.JsonParserUtils;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
@@ -17,8 +18,10 @@ import lombok.Setter;
 public class ApproveTransferMoneyResponse {
     private HttpStatus statusCode;
     private Body body;
+
     public ApproveTransferMoneyResponse() {
     }
+
     @JsonCreator
     public ApproveTransferMoneyResponse(
             @JsonProperty("status_code") HttpStatus statusCode,
@@ -28,7 +31,7 @@ public class ApproveTransferMoneyResponse {
     }
 
     public String toString() {
-        return "status_code=" + statusCode + ",body={" + body + "}";
+        return JsonParserUtils.stringify(this);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -42,21 +45,19 @@ public class ApproveTransferMoneyResponse {
 
         public Body() {
         }
+
         @JsonCreator
         public Body(
-            @JsonProperty("success") boolean success,
-            @JsonProperty("message") String message,
-            @JsonProperty("code") int code
-        )
-        {
-            this.success= success;
-            this.message= message;
-            this.code= code;
+                @JsonProperty("success") boolean success,
+                @JsonProperty("message") String message,
+                @JsonProperty("code") int code) {
+            this.success = success;
+            this.message = message;
+            this.code = code;
         }
 
-        public String toString()
-        {
-            return "success:" + success + ",message:" + message + ",code:" + code;
+        public String toString() {
+            return JsonParserUtils.stringify(this);
         }
     }
 }

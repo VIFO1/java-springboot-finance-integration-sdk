@@ -1,9 +1,9 @@
-package vn.vifo.api.CommonFunctions;
+package vn.vifo.api.Ultils;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 
 import javax.crypto.Mac;
@@ -13,8 +13,8 @@ import org.apache.commons.codec.binary.Hex;
 
 import com.google.gson.Gson;
 
-public class CommonFunctions {
-    public List<String> validateSignatureInputs(String secretKey, String timestamp, Map<String, Object> body) {
+public class HashingUtils {
+    public List<String> validateSignatureInputs(String secretKey, String timestamp, HashMap<String, Object> body) {
         List<String> errors = new ArrayList<>();
         if (secretKey == null || secretKey.isEmpty()) {
             errors.add("secretKey must not be empty");
@@ -29,10 +29,10 @@ public class CommonFunctions {
         return errors;
     }
 
-    public String generateSignature(Map<String, Object> body, String secretKey, String timestamp) {
+    public String generateSignature(HashMap<String, Object> body, String secretKey, String timestamp) {
         try {
             Gson gson = new Gson();
-            Map<String, Object> sortedBody = new TreeMap<>(body);
+            TreeMap<String, Object> sortedBody = new TreeMap<>(body);
             String jsonBody = gson.toJson(sortedBody);
             String signatureString = timestamp + jsonBody;
             Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
@@ -45,7 +45,7 @@ public class CommonFunctions {
         }
     }
 
-    public List<String> validateCreateOrder(Map<String, String> headers, Map<String, Object> body) {
+    public List<String> validateCreateOrder(HashMap<String, String> headers, HashMap<String, Object> body) {
         List<String> errors = new ArrayList<>();
 
         if (headers == null || headers.isEmpty()) {

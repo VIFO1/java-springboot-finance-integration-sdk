@@ -1,4 +1,4 @@
-package vn.vifo.api.Modules.Converters;
+package vn.vifo.api.Modules.DTO;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import vn.vifo.api.Ultils.JsonParserUtils;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
@@ -33,7 +34,7 @@ public class WebhookResponse {
 
     @Override
     public String toString() {
-        return "body={" + "action_name:" + actionName + ",message:" + message + ",data:{" + data + "}" + "}" + ",errros:" + errors;
+         return JsonParserUtils.stringify(this);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -68,8 +69,7 @@ public class WebhookResponse {
         @Override
         public String toString()
         {
-            return "id:" + id +",order_number:" + orderNumber + ",distributor_order_number" + distributorOrderNumber
-            +",amount" + amount + ",transaction_id" + transactionId;
+            return JsonParserUtils.stringify(this);
         }
     }
 }

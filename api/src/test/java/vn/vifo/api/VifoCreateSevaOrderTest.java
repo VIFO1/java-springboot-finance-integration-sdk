@@ -2,7 +2,7 @@ package vn.vifo.api;
 
 
 import vn.vifo.api.Modules.Services.VifoSendRequest;
-import vn.vifo.api.Modules.Converters.CreateSevaOrderResponse;
+import vn.vifo.api.Modules.DTO.CreateSevaOrderResponse;
 import vn.vifo.api.Modules.Services.VifoCreateSevaOrder;
 
 public class VifoCreateSevaOrderTest {

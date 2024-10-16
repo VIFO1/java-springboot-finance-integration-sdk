@@ -1,7 +1,7 @@
 package vn.vifo.api;
 
 
-import vn.vifo.api.Modules.Converters.BankResponse;
+import vn.vifo.api.Modules.DTO.BankResponse;
 import vn.vifo.api.Modules.Services.VifoBank;
 import vn.vifo.api.Modules.Services.VifoSendRequest;
 

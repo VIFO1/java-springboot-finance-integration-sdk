@@ -1,31 +1,32 @@
 package vn.vifo.api.Modules.Services;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.TreeMap;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import vn.vifo.api.CommonFunctions.CommonFunctions;
-import vn.vifo.api.Modules.Converters.WebhookResponse;
+import vn.vifo.api.Ultils.HashingUtils;
 import vn.vifo.api.Interfaces.WebhookInterface;
+import vn.vifo.api.Modules.DTO.WebhookResponse;
 public class Webhook implements WebhookInterface {
-    private CommonFunctions commonFunctions;
+    private HashingUtils hashingUtils;
     private ObjectMapper objectMapper;
 
     public Webhook() {
-        this.commonFunctions = new CommonFunctions();
+        this.hashingUtils = new HashingUtils();
         this.objectMapper = new ObjectMapper();
     }
 
-    public String createSignature(Map<String, Object> body, String secretKey, String timestamp) {
+    public String createSignature(HashMap<String, Object> body, String secretKey, String timestamp) {
 
-        return this.commonFunctions.generateSignature(body, secretKey, timestamp);
+        return this.hashingUtils.generateSignature(body, secretKey, timestamp);
     }
 
-    public boolean handleSignature(Map<String, Object> data, String requestSignature, String secretKey,
+    public boolean handleSignature(HashMap<String, Object> data, String requestSignature, String secretKey,
             String timestamp) {
-        List<String> errors = this.commonFunctions.validateSignatureInputs(secretKey, timestamp, data);
+        List<String> errors = this.hashingUtils.validateSignatureInputs(secretKey, timestamp, data);
 
         if (!errors.isEmpty()) {
             return false;
@@ -39,7 +40,7 @@ public class Webhook implements WebhookInterface {
         }
     }
 
-    public WebhookResponse convertObject(Map<String,Object> response) {
+    public WebhookResponse convertObject(HashMap<String,Object> response) {
         try {
             String jsonResponse = objectMapper.writeValueAsString(response);
             return objectMapper.readValue(jsonResponse, WebhookResponse.class);

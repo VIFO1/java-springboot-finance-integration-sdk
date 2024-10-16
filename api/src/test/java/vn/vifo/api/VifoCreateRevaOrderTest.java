@@ -2,7 +2,7 @@ package vn.vifo.api;
 
 
 import vn.vifo.api.Modules.Services.VifoSendRequest;
-import vn.vifo.api.Modules.Converters.CreateRevaOrderResponse;
+import vn.vifo.api.Modules.DTO.CreateRevaOrderResponse;
 import vn.vifo.api.Modules.Services.VifoCreateRevaOrder;
 
 public class VifoCreateRevaOrderTest {

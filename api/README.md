@@ -37,13 +37,13 @@ Once the tokens are set using the above methods, they will be automatically incl
 BankResponse bank = vifoServiceFactory.fetchBankInformation();
 
 7.Get NAPAS Beneficiary Name:
-BeneficiaryNameResponse bank = vifoServiceFactory.fetchBeneficiaryName(Map<String,Object> body);
+BeneficiaryNameResponse bank = vifoServiceFactory.fetchBeneficiaryName(HashMap<String,Object> body);
 
 8.Create Transfer Money API:
-TransferMoneyResponse transferMoney = vifoServiceFactory.executeMoneyTransfer(Map<String,Object> body);
+TransferMoneyResponse transferMoney = vifoServiceFactory.executeMoneyTransfer(HashMap<String,Object> body);
 
 9.Bulk Approve Transfer Money API
-ApproveTransferMoneyResponse approveMoneyTransfer = vifoServiceFactory.approveMoneyTransfer(String secretKey, String timestamp, Map<String,Object> body );
+ApproveTransferMoneyResponse approveMoneyTransfer = vifoServiceFactory.approveMoneyTransfer(String secretKey, String timestamp, HashMap<String,Object> body );
 
 10.Others request:
 OtherRequestResponse otherRequest = vifoServiceFactory.processOtherRequest(String key);

@@ -1,4 +1,4 @@
-package vn.vifo.api.Modules.Converters;
+package vn.vifo.api.Modules.DTO;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import vn.vifo.api.Ultils.JsonParserUtils;
 
 import java.util.List;
 
@@ -30,10 +31,7 @@ public class BankResponse {
 
     @Override
     public String toString() {
-        return "{" +
-                "status_code:'" + statusCode  +"," 
-                + body + ",http_code:" + httpCode +
-                '}';
+         return JsonParserUtils.stringify(this);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -62,13 +60,7 @@ public class BankResponse {
 
         @Override
         public String toString() {
-            return "body{" +
-                    "success=" + success +
-                    ", message='" + message  +
-                    ", error_code='" + errorCode  +
-                    ", data=" + data +
-           
-                    '}';
+            return JsonParserUtils.stringify(this);
         }
     }
 
@@ -91,11 +83,7 @@ public class BankResponse {
 
         @Override
         public String toString() {
-            return "Data{" +
-                    "code='" + code  +
-                    ", name='" + name  +
-                    ", shortName='" + shortName  +
-                    '}';
+            return JsonParserUtils.stringify(this);
         }
     }
 }

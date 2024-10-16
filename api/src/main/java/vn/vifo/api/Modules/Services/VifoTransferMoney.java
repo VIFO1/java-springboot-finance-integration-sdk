@@ -1,16 +1,15 @@
 package vn.vifo.api.Modules.Services;
 
-import java.util.Map;
-
 import org.springframework.http.HttpStatus;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import vn.vifo.api.Interfaces.VifoTransferMoneyInterface;
-import vn.vifo.api.Modules.Converters.TransferMoneyResponse;
+import vn.vifo.api.Modules.DTO.TransferMoneyResponse;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class VifoTransferMoney implements VifoTransferMoneyInterface {
     private VifoSendRequest sendRequest;
@@ -22,7 +21,7 @@ public class VifoTransferMoney implements VifoTransferMoneyInterface {
 
     }
 
-    public List<String> validateRequestInput(Map<String, String> headers, Map<String, Object> body) {
+    public List<String> validateRequestInput(HashMap<String, String> headers, HashMap<String, Object> body) {
         List<String> errors = new ArrayList<>();
         if (headers == null || headers.isEmpty()) {
             errors.add("headers must not be empty");
@@ -33,7 +32,7 @@ public class VifoTransferMoney implements VifoTransferMoneyInterface {
         return errors;
     }
 
-    public TransferMoneyResponse createTransferMoney(Map<String, String> headers, Map<String, Object> body) {
+    public TransferMoneyResponse createTransferMoney(HashMap<String, String> headers, HashMap<String, Object> body) {
         String endpoint = "/v2/finance";
         List<String> errors = validateRequestInput(headers, body);
         if (!errors.isEmpty()) {
@@ -42,7 +41,7 @@ public class VifoTransferMoney implements VifoTransferMoneyInterface {
                     .build();
         }
         try {
-            Map<String, Object> apiResponse = this.sendRequest.sendRequest("POST", endpoint, headers, body);
+            HashMap<String, Object> apiResponse = this.sendRequest.sendRequest("POST", endpoint, headers, body);
             HttpStatus statusCode = (HttpStatus) apiResponse.get("status_code");
             if (statusCode == null || !statusCode.equals((HttpStatus.CREATED))) {
                 String errorMessage = (String) apiResponse.get("errors");

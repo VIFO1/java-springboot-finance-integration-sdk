@@ -2,27 +2,26 @@ package vn.vifo.api.Modules.Services;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 
 import vn.vifo.api.Interfaces.QRTypeOrder;
 import vn.vifo.api.Interfaces.VifoServiceFactoryInterface;
-import vn.vifo.api.Modules.Converters.ApproveTransferMoneyResponse;
-import vn.vifo.api.Modules.Converters.AuthenticateResponse;
-import vn.vifo.api.Modules.Converters.BankResponse;
-import vn.vifo.api.Modules.Converters.BeneficiaryNameResponse;
-import vn.vifo.api.Modules.Converters.CreateRevaOrderResponse;
-import vn.vifo.api.Modules.Converters.CreateSevaOrderResponse;
-import vn.vifo.api.Modules.Converters.OtherRequestResponse;
-import vn.vifo.api.Modules.Converters.BeneficiaryNameResponse.Body;
-import vn.vifo.api.Modules.Converters.TransferMoneyResponse;
-import vn.vifo.api.Modules.Converters.WebhookResponse;
+import vn.vifo.api.Modules.DTO.ApproveTransferMoneyResponse;
+import vn.vifo.api.Modules.DTO.AuthenticateResponse;
+import vn.vifo.api.Modules.DTO.BankResponse;
+import vn.vifo.api.Modules.DTO.BeneficiaryNameResponse;
+import vn.vifo.api.Modules.DTO.CreateRevaOrderResponse;
+import vn.vifo.api.Modules.DTO.CreateSevaOrderResponse;
+import vn.vifo.api.Modules.DTO.OtherRequestResponse;
+import vn.vifo.api.Modules.DTO.TransferMoneyResponse;
+import vn.vifo.api.Modules.DTO.WebhookResponse;
+import vn.vifo.api.Modules.DTO.BeneficiaryNameResponse.Body;
 
 public class VifoServiceFactory implements VifoServiceFactoryInterface {
     private VifoSendRequest sendRequest;
     private VifoAuthenticate authenticate;
-    private Map<String, String> headersLogin;
+    private HashMap<String, String> headersLogin = new HashMap<>();
     private HashMap<String, String> headers = new HashMap<>();
     private String userToken;
     private String adminToken;
@@ -45,10 +44,9 @@ public class VifoServiceFactory implements VifoServiceFactoryInterface {
         this.orderReva = new VifoCreateRevaOrder(this.sendRequest);
         this.orderSeva = new VifoCreateSevaOrder(this.sendRequest);
 
-        this.headersLogin = Map.of(
-                "Accept", "application/json,text/plain,*/*",
-                "Accept-Encoding", "gzip, deflate",
-                "Accept-Language", "*");
+        this.headersLogin.put("Accept", "application/json,text/plain,*/*");
+        this.headersLogin.put("Accept-Encoding", "gzip, deflate");
+        this.headersLogin.put("Accept-Language", "*");
 
         this.headers.put("Accept", "application/json");
         this.headers.put("Content-Type", "application/json");
@@ -64,7 +62,7 @@ public class VifoServiceFactory implements VifoServiceFactoryInterface {
         this.adminToken = token;
     }
 
-    public Map<String, String> getAuthorizationHeaders(String type) {
+    public HashMap<String, String> getAuthorizationHeaders(String type) {
         String token;
         if (type.equals("user")) {
             token = this.userToken;
@@ -91,7 +89,7 @@ public class VifoServiceFactory implements VifoServiceFactoryInterface {
     }
 
     public BankResponse fetchBankInformation() {
-        Map<String, String> headers = this.getAuthorizationHeaders("user");
+        HashMap<String, String> headers = this.getAuthorizationHeaders("user");
         BankResponse response = this.bank.getBank(headers);
         if (response == null) {
             return BankResponse.builder()
@@ -103,8 +101,8 @@ public class VifoServiceFactory implements VifoServiceFactoryInterface {
         return response;
     }
 
-    public BeneficiaryNameResponse fetchBeneficiaryName(Map<String, Object> body) {
-        Map<String, String> headers = this.getAuthorizationHeaders("user");
+    public BeneficiaryNameResponse fetchBeneficiaryName(HashMap<String, Object> body) {
+        HashMap<String, String> headers = this.getAuthorizationHeaders("user");
         if (!body.containsKey("bank_code") || !body.containsKey("account_number")) {
             BeneficiaryNameResponse responseBody = BeneficiaryNameResponse.builder()
                     .body(Body.builder()
@@ -117,8 +115,8 @@ public class VifoServiceFactory implements VifoServiceFactoryInterface {
         return this.bank.getBeneficiaryName(headers, body);
     }
 
-    public TransferMoneyResponse executeMoneyTransfer(Map<String, Object> body) {
-        Map<String, String> headers = this.getAuthorizationHeaders("user");
+    public TransferMoneyResponse executeMoneyTransfer(HashMap<String, Object> body) {
+        HashMap<String, String> headers = this.getAuthorizationHeaders("user");
 
         TransferMoneyResponse response = this.transferMoney.createTransferMoney(headers, body);
         if (response.getBody() != null) {
@@ -131,10 +129,9 @@ public class VifoServiceFactory implements VifoServiceFactoryInterface {
     }
 
     public ApproveTransferMoneyResponse approveMoneyTransfer(String secretKey, String timestamp,
-            Map<String, Object> body) {
-        Map<String, String> headers = this.getAuthorizationHeaders("admin");
+            HashMap<String, Object> body) {
+        HashMap<String, String> headers = this.getAuthorizationHeaders("admin");
         String requestSignature = this.approveTransferMoney.createSignature(body, secretKey, timestamp);
-        System.out.println(requestSignature);
         headers.put("x-request-timestamp", timestamp);
         headers.put("x-request-signature", requestSignature);
         ApproveTransferMoneyResponse response = this.approveTransferMoney.approveTransfers(secretKey, timestamp,
@@ -150,7 +147,7 @@ public class VifoServiceFactory implements VifoServiceFactoryInterface {
     }
 
     public OtherRequestResponse processOtherRequest(String key) {
-        Map<String, String> headers = this.getAuthorizationHeaders("user");
+        HashMap<String, String> headers = this.getAuthorizationHeaders("user");
         OtherRequestResponse response = this.otherRequest.checkOrderStatus(headers, key);
         if (response.getStatusCode() == HttpStatus.OK) {
             return OtherRequestResponse.builder()
@@ -161,7 +158,7 @@ public class VifoServiceFactory implements VifoServiceFactoryInterface {
         return response;
     }
 
-    public boolean verifyWebhookSignature(Map<String, Object> data, String requestSignature, String secretKey,
+    public boolean verifyWebhookSignature(HashMap<String, Object> data, String requestSignature, String secretKey,
             String timestamp) {
         boolean result = this.webhook.handleSignature(data, requestSignature, secretKey, timestamp);
         if (result) {
@@ -171,10 +168,10 @@ public class VifoServiceFactory implements VifoServiceFactoryInterface {
         }
     }
 
-    public WebhookResponse convertObjectToWebhookResponse(Map<String, Object> response) {
+    public WebhookResponse convertObjectToWebhookResponse(HashMap<String, Object> response) {
         WebhookResponse result = this.webhook.convertObject(response);
 
-        if (result.getActionName() == null || result.getData() == null) {
+        if (result.getActionName() == null || result.getData() == null || result.getMessage() == null) {
             return WebhookResponse.builder()
                     .errors("data conversion failed")
                     .build();
@@ -198,8 +195,8 @@ public class VifoServiceFactory implements VifoServiceFactoryInterface {
             String endDate
 
     ) {
-        Map<String, String> headers = this.getAuthorizationHeaders("user");
-        Map<String, Object> body = new HashMap<>();
+        HashMap<String, String> headers = this.getAuthorizationHeaders("user");
+        HashMap<String, Object> body = new HashMap<>();
         String actualProductCodeReva = (productCode == null || productCode.isEmpty()) ? "REVAVF240101" : productCode;
         body.put("fullname", fullname);
         body.put("benefiary_bank_code", beneficiaryAccountNo);
@@ -243,8 +240,8 @@ public class VifoServiceFactory implements VifoServiceFactoryInterface {
             String endDate
 
     ) {
-        Map<String, String> headers = this.getAuthorizationHeaders("user");
-        Map<String, Object> body = new HashMap<>();
+        HashMap<String, String> headers = this.getAuthorizationHeaders("user");
+        HashMap<String, Object> body = new HashMap<>();
         String actualProductCodeReva = (productCode == null || productCode.isEmpty()) ? "SEVAVF240101" : productCode;
         body.put("fullname", fullname);
         body.put("benefiary_bank_code", beneficiaryBankCode);

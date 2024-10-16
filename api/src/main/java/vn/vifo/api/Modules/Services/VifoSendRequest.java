@@ -1,6 +1,6 @@
 package vn.vifo.api.Modules.Services;
 
-import java.util.Map;
+import java.util.HashMap;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -22,13 +22,13 @@ public class VifoSendRequest implements VifoSendRequestInterface {
     }
 
     @SuppressWarnings("deprecation")
-    public Map<String, Object> sendRequest(String method, String endpoint, Map<String, String> headers,
-            Map<String, Object> body) {
+    public HashMap<String, Object> sendRequest(String method, String endpoint, HashMap<String, String> headers,
+            HashMap<String, Object> body) {
         String url = this.baseUrl + endpoint;
         HttpHeaders httpHeaders = new HttpHeaders();
         headers.forEach(httpHeaders::set);
-        HttpEntity<Map<String, Object>> httpEntity = new HttpEntity<>(body, httpHeaders);
-
+        HttpEntity<HashMap<String, Object>> httpEntity = new HttpEntity<>(body, httpHeaders);
+        HashMap<String, Object> responseMap = new HashMap<>();
         try {
             ResponseEntity<Object> responseEntity = restTemplate.exchange(
                     url,
@@ -36,20 +36,19 @@ public class VifoSendRequest implements VifoSendRequestInterface {
                     httpEntity,
                     Object.class);
 
-            return Map.of(
-                    "status_code", responseEntity.getStatusCode(),
-                    "body", responseEntity.getBody(),
-                    "http_code", responseEntity.getStatusCodeValue());
+            responseMap.put("status_code", responseEntity.getStatusCode());
+            responseMap.put("body", responseEntity.getBody());
+            responseMap.put("http_code", responseEntity.getStatusCodeValue());
         } catch (HttpServerErrorException e) {
-            return Map.of(
-                    "errors", e.getMessage(),
-                    "status_code", e.getStatusCode(),
-                    "body", e.getResponseBodyAsString());
+            responseMap.put("errors", e.getMessage());
+            responseMap.put("status_code", e.getStatusCode());
+            responseMap.put("body", e.getResponseBodyAsString());
+
         } catch (HttpClientErrorException e) {
-            return Map.of(
-                    "errors", e.getMessage(),
-                    "status_code", e.getStatusCode(),
-                    "body", e.getResponseBodyAsString());
+            responseMap.put("errors", e.getMessage());
+            responseMap.put("status_code", e.getStatusCode());
+            responseMap.put("body", e.getResponseBodyAsString());
         }
+        return responseMap;
     }
 }

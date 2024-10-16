@@ -1,4 +1,4 @@
-package vn.vifo.api.Modules.Converters;
+package vn.vifo.api.Modules.DTO;
 
 import org.springframework.http.HttpStatus;
 
@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import vn.vifo.api.Ultils.JsonParserUtils;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
@@ -30,9 +31,10 @@ public class AuthenticateResponse {
         this.httpCode = httpCode;
         this.body = body;
     }
-
+    
+    @Override
     public String toString() {
-        return "{body{" + body + "}" + ",stautus_code=" + statusCode + ",http_code=" + httpCode + "}";
+       return JsonParserUtils.stringify(this);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -45,18 +47,18 @@ public class AuthenticateResponse {
         private String accessToken;
         private String refreshToken;
         private String message;
-        private String errors;
+        private Object  errors;
 
         public Body() {
         }
 
         public Body(
                 @JsonProperty("token_type") String tokenType,
-                @JsonProperty("expire_in") int expiresIn,
+                @JsonProperty("expires_in") int expiresIn,
                 @JsonProperty("access_token") String accessToken,
                 @JsonProperty("refresh_token") String refreshToken,
                 @JsonProperty("message") String message,
-                @JsonProperty("errors") String errors) {
+                @JsonProperty("errors") Object  errors) {
             this.tokenType = tokenType;
             this.expiresIn = expiresIn;
             this.accessToken = accessToken;
@@ -64,10 +66,10 @@ public class AuthenticateResponse {
             this.message = message;
             this.errors = errors;
         }
-
+        
+    @Override
         public String toString() {
-            return "token_type=" + tokenType + ",expire_in=" + expiresIn + ",access_token=" + accessToken
-                    + ",refresh_token=" + refreshToken + ",message:" + message + ",errors:" + errors;
+                  return JsonParserUtils.stringify(this);
         }
     }
 }

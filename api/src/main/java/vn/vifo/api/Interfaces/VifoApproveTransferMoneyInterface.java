@@ -1,13 +1,13 @@
 package vn.vifo.api.Interfaces;
 
-import java.util.Map;
+import java.util.HashMap;
 
-import vn.vifo.api.Modules.Converters.ApproveTransferMoneyResponse;
+import vn.vifo.api.Modules.DTO.ApproveTransferMoneyResponse;
 
 public interface VifoApproveTransferMoneyInterface {
-    public String createSignature(Map<String, Object> body, String secretKey, String timestamp);
+    public String createSignature(HashMap<String, Object> body, String secretKey, String timestamp);
 
     public ApproveTransferMoneyResponse approveTransfers(String secretKey, String timestamp,
-            Map<String, String> headers,
-            Map<String, Object> body);
+            HashMap<String, String> headers,
+            HashMap<String, Object> body);
 }

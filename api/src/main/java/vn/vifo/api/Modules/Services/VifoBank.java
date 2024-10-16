@@ -1,6 +1,7 @@
 package vn.vifo.api.Modules.Services;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -9,9 +10,9 @@ import org.springframework.http.HttpStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import vn.vifo.api.Interfaces.VifoBankInterface;
-import vn.vifo.api.Modules.Converters.BankResponse;
-import vn.vifo.api.Modules.Converters.BeneficiaryNameResponse;
-import vn.vifo.api.Modules.Converters.BeneficiaryNameResponse.Body;
+import vn.vifo.api.Modules.DTO.BankResponse;
+import vn.vifo.api.Modules.DTO.BeneficiaryNameResponse;
+import vn.vifo.api.Modules.DTO.BeneficiaryNameResponse.Body;
 
 public class VifoBank implements VifoBankInterface {
     private VifoSendRequest sendRequest;
@@ -23,7 +24,7 @@ public class VifoBank implements VifoBankInterface {
 
     }
 
-    public BankResponse getBank(Map<String, String> headers) {
+    public BankResponse getBank(HashMap<String, String> headers) {
         String endpoint = "/v2/data/banks/napas";
 
         if (headers == null || headers.isEmpty()) {
@@ -36,7 +37,7 @@ public class VifoBank implements VifoBankInterface {
         }
 
         try {
-            Map<String, Object> apiResponse = this.sendRequest.sendRequest("GET", endpoint, headers, null);
+            HashMap<String, Object> apiResponse = this.sendRequest.sendRequest("GET", endpoint, headers, null);
             HttpStatus statusCode = (HttpStatus) apiResponse.get("status_code");
 
             if (statusCode == null || !statusCode.equals(HttpStatus.OK)) {
@@ -59,7 +60,7 @@ public class VifoBank implements VifoBankInterface {
         }
     }
 
-    public List<String> validateBody(Map<String, String> headers, Map<String, Object> body) {
+    public List<String> validateBody(HashMap<String, String> headers, HashMap<String, Object> body) {
         List<String> errors = new ArrayList<>();
         if (headers == null || headers.isEmpty()) {
             errors.add("headers must not be empty");
@@ -70,7 +71,7 @@ public class VifoBank implements VifoBankInterface {
         return errors;
     }
 
-    public BeneficiaryNameResponse getBeneficiaryName(Map<String, String> headers, Map<String, Object> body) {
+    public BeneficiaryNameResponse getBeneficiaryName(HashMap<String, String> headers, HashMap<String, Object> body) {
         String endpoint = "/v2/finance/napas/receiver";
         List<String> errors = validateBody(headers, body);
 
@@ -84,7 +85,7 @@ public class VifoBank implements VifoBankInterface {
         }
 
         try {
-            Map<String, Object> apiResponse = this.sendRequest.sendRequest("POST", endpoint, headers, body);
+            HashMap<String, Object> apiResponse = this.sendRequest.sendRequest("POST", endpoint, headers, body);
             HttpStatus statusCode = (HttpStatus) apiResponse.get("status_code");
 
             if (statusCode == null || !statusCode.equals(HttpStatus.OK)) {

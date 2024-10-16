@@ -1,15 +1,15 @@
 package vn.vifo.api.Modules.Services;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import vn.vifo.api.Interfaces.VifoAutheticateInterface;
-import vn.vifo.api.Modules.Converters.AuthenticateResponse;
+import vn.vifo.api.Modules.DTO.AuthenticateResponse;
 
 public class VifoAuthenticate implements VifoAutheticateInterface {
     private VifoSendRequest sendRequest;
@@ -20,7 +20,7 @@ public class VifoAuthenticate implements VifoAutheticateInterface {
         this.objectMapper = new ObjectMapper();
     }
 
-    public List<String> validateLoginInput(Map<String, String> headers, String username, String password) {
+    public List<String> validateLoginInput(HashMap<String, String> headers, String username, String password) {
         List<String> errors = new ArrayList<>();
         if (username == null || username.trim().isEmpty()) {
             errors.add(" Invalid username");
@@ -36,13 +36,14 @@ public class VifoAuthenticate implements VifoAutheticateInterface {
         return errors;
     }
 
-    public Map<String, Object> buildLoginBody(String username, String password) {
-        return Map.of(
-                "username", username,
-                "password", password);
+    public HashMap<String, Object> buildLoginBody(String username, String password) {
+        HashMap<String, Object> loginBody = new HashMap<>();
+        loginBody.put("username", username);
+        loginBody.put("password", password);
+        return loginBody;
     }
 
-    public AuthenticateResponse authenticateUser(Map<String, String> headers, String username, String password) {
+    public AuthenticateResponse authenticateUser(HashMap<String, String> headers, String username, String password) {
         String endpoint = "/v1/clients/web/admin/login";
         List<String> errors = validateLoginInput(headers, username, password);
         if (!errors.isEmpty()) {
@@ -52,19 +53,19 @@ public class VifoAuthenticate implements VifoAutheticateInterface {
                             .build())
                     .build();
         }
-        Map<String, Object> body = buildLoginBody(username, password);
+
+        HashMap<String, Object> body = buildLoginBody(username, password);
         try {
-            Map<String, Object> apiResponse = this.sendRequest.sendRequest("POST", endpoint, headers, body);
+            HashMap<String, Object> apiResponse = this.sendRequest.sendRequest("POST", endpoint, headers, body);
 
             HttpStatus httpStatusCode = (HttpStatus) apiResponse.get("status_code");
 
             if (httpStatusCode == null || !httpStatusCode.equals(HttpStatus.OK)) {
                 String errorMessage = (String) apiResponse.get("errors");
-
                 return AuthenticateResponse.builder()
                         .statusCode(httpStatusCode)
                         .body(AuthenticateResponse.Body.builder()
-                                .message("errorMessage" + errorMessage)
+                                .message("Error: " + errorMessage)
                                 .build())
                         .build();
             }
@@ -77,4 +78,5 @@ public class VifoAuthenticate implements VifoAutheticateInterface {
             return null;
         }
     }
+
 }

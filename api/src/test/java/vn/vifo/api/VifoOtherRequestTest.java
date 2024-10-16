@@ -1,7 +1,7 @@
 package vn.vifo.api;
 
 
-import vn.vifo.api.Modules.Converters.OtherRequestResponse;
+import vn.vifo.api.Modules.DTO.OtherRequestResponse;
 import vn.vifo.api.Modules.Services.VifoOtherRequest;
 import vn.vifo.api.Modules.Services.VifoSendRequest;
 

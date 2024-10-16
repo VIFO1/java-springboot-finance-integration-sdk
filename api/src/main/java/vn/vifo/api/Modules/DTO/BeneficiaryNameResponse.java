@@ -1,4 +1,4 @@
-package vn.vifo.api.Modules.Converters;
+package vn.vifo.api.Modules.DTO;
 
 import java.util.Map;
 
@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import vn.vifo.api.Ultils.JsonParserUtils;
 
 @Getter
 @Setter
@@ -34,7 +35,7 @@ public class BeneficiaryNameResponse {
 
     @Override
     public String toString() {
-        return "{status_code:" + statusCode + "," + body + "}";
+        return JsonParserUtils.stringify(this);
     }
 
     @Getter
@@ -60,7 +61,7 @@ public class BeneficiaryNameResponse {
 
         @Override
         public String toString() {
-            return "body{" + "success:" + success + ",message:" + message + ",code:" + code + ",data:" + data + "}";
+            return JsonParserUtils.stringify(this);
         }
     }
 

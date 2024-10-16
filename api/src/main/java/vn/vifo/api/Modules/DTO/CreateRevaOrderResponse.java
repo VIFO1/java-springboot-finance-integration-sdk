@@ -1,4 +1,4 @@
-package vn.vifo.api.Modules.Converters;
+package vn.vifo.api.Modules.DTO;
 
 import org.springframework.http.HttpStatus;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import vn.vifo.api.Ultils.JsonParserUtils;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Setter
@@ -31,7 +32,7 @@ public class CreateRevaOrderResponse {
 
     @Override
     public String toString() {
-        return "status_code=" + statusCode + ",body={" + body + "}" + ",errors:" + errors;
+        return JsonParserUtils.stringify(this);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -59,7 +60,7 @@ public class CreateRevaOrderResponse {
 
         @Override
         public String toString() {
-            return "status=" + status + ",code=" + code + ",data={" + data + "}" + ",message:" + message;
+            return JsonParserUtils.stringify(this);
         }
     }
 
@@ -112,11 +113,7 @@ public class CreateRevaOrderResponse {
 
         @Override
         public String toString() {
-            return "id=" + id + ",order_number=" + orderNumber + ",distributor_order_number=" + distributorOrderNumber
-            + ",payment_account=" + paymentAccount + ",payment_bank_name=" + paymentBankName
-            + ",payment_account_name=" + paymentAccountName + ",qr_payment=" + qrPayment
-            + ",amount=" + amount + ",start_date=" + startDate + ",end_date=" + endDate
-            + ",created_at={" + createdAt + "}";
+            return JsonParserUtils.stringify(this);
         }
     }
 
@@ -144,7 +141,7 @@ public class CreateRevaOrderResponse {
 
         @Override
         public String toString() {
-            return "date=" + date + ",timezone_type=" + timezoneType + ",timezone=" + timezone;
+            return JsonParserUtils.stringify(this);
         }
     }
 }

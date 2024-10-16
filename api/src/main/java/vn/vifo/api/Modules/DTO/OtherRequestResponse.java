@@ -1,4 +1,4 @@
-package vn.vifo.api.Modules.Converters;
+package vn.vifo.api.Modules.DTO;
 
 import org.springframework.http.HttpStatus;
 
@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import vn.vifo.api.Ultils.JsonParserUtils;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
@@ -57,7 +58,7 @@ public class OtherRequestResponse {
 
         @Override
         public String toString() {
-            return "success=" + success + ",message=" + message + "{data" + data + "}";
+            return JsonParserUtils.stringify(this);
         }
     }
 
@@ -94,8 +95,7 @@ public class OtherRequestResponse {
 
         @Override
         public String toString() {
-            return "id=" + id + ",order_number=" + orderNumber + ",distributor_order_number=" + distributorOrder + ",status="
-                    + status + ",amount=" + amount + ",product={" + product + "}";
+            return JsonParserUtils.stringify(this);
 
         }
     }
@@ -104,26 +104,24 @@ public class OtherRequestResponse {
     @Getter
     @Setter
     @Builder
-    public static class Product
-    {
+    public static class Product {
         private String name;
         private String code;
 
-        public Product(){}
+        public Product() {
+        }
+
         @JsonCreator
         public Product(
-            @JsonProperty("name") String name,
-            @JsonProperty("code") String code
-        )
-        {
+                @JsonProperty("name") String name,
+                @JsonProperty("code") String code) {
             this.name = name;
             this.code = code;
         }
 
         @Override
-        public String toString()
-        {
-            return "name=" + name + ",code=" + code;
+        public String toString() {
+            return JsonParserUtils.stringify(this);
         }
     }
 
