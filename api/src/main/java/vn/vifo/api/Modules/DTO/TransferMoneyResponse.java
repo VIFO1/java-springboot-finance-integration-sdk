@@ -33,8 +33,7 @@ public class TransferMoneyResponse {
 
     @Override
     public String toString() {
-        return "{" + body + "," + "status_code=" + statusCode + ",errors:" + errors + ",http_code=" + httpCode + "}";
-
+        return JsonParserUtils.stringify(this);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)

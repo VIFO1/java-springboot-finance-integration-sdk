@@ -101,7 +101,6 @@ public class VifoBank implements VifoBankInterface {
             }
 
             String jsonResponse = JsonParserUtils.stringify(apiResponse);
-
             BeneficiaryNameResponse result = objectMapper.readValue(jsonResponse, BeneficiaryNameResponse.class);
 
             return result;

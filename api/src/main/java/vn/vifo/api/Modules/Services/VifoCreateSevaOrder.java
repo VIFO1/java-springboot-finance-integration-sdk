@@ -11,6 +11,7 @@ import vn.vifo.api.Interfaces.VifoCreateSevaOrderInterface;
 import vn.vifo.api.Modules.DTO.CreateSevaOrderResponse;
 import vn.vifo.api.Ultils.HashingUtils;
 import vn.vifo.api.Ultils.HttpStatusUtils;
+import vn.vifo.api.Ultils.JsonParserUtils;
 
 public class VifoCreateSevaOrder implements VifoCreateSevaOrderInterface {
     private VifoSendRequest sendRequest;
@@ -41,8 +42,8 @@ public class VifoCreateSevaOrder implements VifoCreateSevaOrderInterface {
                         .errors(errorsResponse)
                         .build();
             }
-            String jsonReponse = objectMapper.writeValueAsString(apiResponse);
-            CreateSevaOrderResponse result = objectMapper.readValue(jsonReponse, CreateSevaOrderResponse.class);
+            String jsonResponse = JsonParserUtils.stringify(apiResponse);
+            CreateSevaOrderResponse result = objectMapper.readValue(jsonResponse, CreateSevaOrderResponse.class);
             return result;
         } catch (Exception e) {
             e.printStackTrace();

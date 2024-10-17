@@ -131,7 +131,6 @@ public class VifoServiceFactory implements VifoServiceFactoryInterface {
             HashMap<String, Object> body) {
         HashMap<String, String> headers = this.getAuthorizationHeaders("admin");
         String requestSignature = this.approveTransferMoney.createSignature(body, secretKey, timestamp);
-        System.out.println(requestSignature);
         headers.put("x-request-timestamp", timestamp);
         headers.put("x-request-signature", requestSignature);
         ApproveTransferMoneyResponse response = this.approveTransferMoney.approveTransfers(secretKey, timestamp,

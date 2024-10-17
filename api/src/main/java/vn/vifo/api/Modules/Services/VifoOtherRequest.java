@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import vn.vifo.api.Interfaces.VifoOtherRequestInterface;
 import vn.vifo.api.Modules.DTO.OtherRequestResponse;
 import vn.vifo.api.Ultils.HttpStatusUtils;
+import vn.vifo.api.Ultils.JsonParserUtils;
 
 public class VifoOtherRequest implements VifoOtherRequestInterface {
     private VifoSendRequest sendRequest;
@@ -43,10 +44,10 @@ public class VifoOtherRequest implements VifoOtherRequestInterface {
                     .build();
         }
         try {
-            HashMap<String, Object> apiRespone = this.sendRequest.sendRequest("GET", endpoint, headers, null);
-            HttpStatus statusCode = (HttpStatus) apiRespone.get("status_code");
+            HashMap<String, Object> apiResponse = this.sendRequest.sendRequest("GET", endpoint, headers, null);
+            HttpStatus statusCode = (HttpStatus) apiResponse.get("status_code");
             if (statusCode == null || !statusCode.equals(HttpStatus.OK)) {
-                String errorMessage = (String) apiRespone.get("errors");
+                String errorMessage = (String) apiResponse.get("errors");
                 return OtherRequestResponse.builder()
                         .statusCode(HttpStatusUtils.getStatusMessage(statusCode))
                         .body(OtherRequestResponse.Body.builder()
@@ -55,7 +56,7 @@ public class VifoOtherRequest implements VifoOtherRequestInterface {
                         .build();
             }
 
-            String jsonResponse = objectMapper.writeValueAsString(apiRespone);
+            String jsonResponse = JsonParserUtils.stringify(apiResponse);
             OtherRequestResponse otherRequestResponse = objectMapper.readValue(jsonResponse,
                     OtherRequestResponse.class);
             return otherRequestResponse;

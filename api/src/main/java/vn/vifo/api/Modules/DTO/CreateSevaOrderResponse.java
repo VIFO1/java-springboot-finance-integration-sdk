@@ -34,7 +34,7 @@ public class CreateSevaOrderResponse {
 
     @Override
     public String toString() {
-        return "status_code=" + statusCode + ",body={" + body + "}" + ",errors:" + errors;
+        return JsonParserUtils.stringify(this);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -62,7 +62,7 @@ public class CreateSevaOrderResponse {
 
         @Override
         public String toString() {
-            return "status=" + status + ",code=" + code + ",data={" + data + "}";
+            return JsonParserUtils.stringify(this);
         }
     }
 

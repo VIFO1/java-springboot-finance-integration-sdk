@@ -30,7 +30,7 @@ public class OtherRequestResponse {
 
     @Override
     public String toString() {
-        return "{body={" + body + ",status_code=" + statusCode + "}}";
+        return JsonParserUtils.stringify(this);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)

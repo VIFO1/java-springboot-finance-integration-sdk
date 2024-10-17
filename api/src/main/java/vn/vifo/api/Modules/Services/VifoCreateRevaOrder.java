@@ -12,6 +12,7 @@ import vn.vifo.api.Interfaces.VifoCreateRevaOrderInterface;
 import vn.vifo.api.Modules.DTO.CreateRevaOrderResponse;
 import vn.vifo.api.Ultils.HashingUtils;
 import vn.vifo.api.Ultils.HttpStatusUtils;
+import vn.vifo.api.Ultils.JsonParserUtils;
 
 public class VifoCreateRevaOrder implements VifoCreateRevaOrderInterface {
     private VifoSendRequest sendRequest;
@@ -60,8 +61,8 @@ public class VifoCreateRevaOrder implements VifoCreateRevaOrderInterface {
                         .errors(errorsResponse)
                         .build();
             }
-            String jsonReponse = objectMapper.writeValueAsString(apiResponse);
-            CreateRevaOrderResponse result = objectMapper.readValue(jsonReponse, CreateRevaOrderResponse.class);
+            String jsonResponse = JsonParserUtils.stringify(apiResponse);
+            CreateRevaOrderResponse result = objectMapper.readValue(jsonResponse, CreateRevaOrderResponse.class);
             return result;
         } catch (Exception e) {
             e.printStackTrace();
