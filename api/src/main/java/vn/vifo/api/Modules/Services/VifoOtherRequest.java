@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import vn.vifo.api.Interfaces.VifoOtherRequestInterface;
 import vn.vifo.api.Modules.DTO.OtherRequestResponse;
+import vn.vifo.api.Ultils.HttpStatusUtils;
 
 public class VifoOtherRequest implements VifoOtherRequestInterface {
     private VifoSendRequest sendRequest;
@@ -43,11 +44,11 @@ public class VifoOtherRequest implements VifoOtherRequestInterface {
         }
         try {
             HashMap<String, Object> apiRespone = this.sendRequest.sendRequest("GET", endpoint, headers, null);
-            HttpStatus httpStatus = (HttpStatus) apiRespone.get("status_code");
-            if (httpStatus == null || !httpStatus.equals(HttpStatus.OK)) {
+            HttpStatus statusCode = (HttpStatus) apiRespone.get("status_code");
+            if (statusCode == null || !statusCode.equals(HttpStatus.OK)) {
                 String errorMessage = (String) apiRespone.get("errors");
                 return OtherRequestResponse.builder()
-                        .statusCode(httpStatus)
+                        .statusCode(HttpStatusUtils.getStatusMessage(statusCode))
                         .body(OtherRequestResponse.Body.builder()
                                 .message(errorMessage)
                                 .build())

@@ -2,12 +2,9 @@ package vn.vifo.api;
 
 import vn.vifo.api.Modules.AppConfig;
 import vn.vifo.api.Modules.DTO.AuthenticateResponse;
-import vn.vifo.api.Modules.DTO.BeneficiaryNameResponse;
-import vn.vifo.api.Modules.DTO.TransferMoneyResponse;
-import vn.vifo.api.Modules.Services.VifoSendRequest;
+
 import vn.vifo.api.Modules.Services.VifoServiceFactory;
 
-import java.util.Map;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;

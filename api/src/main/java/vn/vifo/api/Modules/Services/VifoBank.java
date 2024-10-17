@@ -3,7 +3,6 @@ package vn.vifo.api.Modules.Services;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 
@@ -13,6 +12,8 @@ import vn.vifo.api.Interfaces.VifoBankInterface;
 import vn.vifo.api.Modules.DTO.BankResponse;
 import vn.vifo.api.Modules.DTO.BeneficiaryNameResponse;
 import vn.vifo.api.Modules.DTO.BeneficiaryNameResponse.Body;
+import vn.vifo.api.Ultils.HttpStatusUtils;
+import vn.vifo.api.Ultils.JsonParserUtils;
 
 public class VifoBank implements VifoBankInterface {
     private VifoSendRequest sendRequest;
@@ -51,7 +52,7 @@ public class VifoBank implements VifoBankInterface {
                         .build();
             }
 
-            String jsonResponse = objectMapper.writeValueAsString(apiResponse);
+            String jsonResponse = JsonParserUtils.stringify(apiResponse);
             BankResponse bankResponse = objectMapper.readValue(jsonResponse, BankResponse.class);
             return bankResponse;
         } catch (Exception e) {
@@ -86,21 +87,21 @@ public class VifoBank implements VifoBankInterface {
 
         try {
             HashMap<String, Object> apiResponse = this.sendRequest.sendRequest("POST", endpoint, headers, body);
-            HttpStatus statusCode = (HttpStatus) apiResponse.get("status_code");
 
+            HttpStatus statusCode = (HttpStatus) apiResponse.get("status_code");
             if (statusCode == null || !statusCode.equals(HttpStatus.OK)) {
                 String errorMessage = (String) apiResponse.get("errors");
-
                 return BeneficiaryNameResponse.builder()
-                        .statusCode(statusCode)
+                        .statusCode(HttpStatusUtils.getStatusMessage(statusCode))
                         .body(BeneficiaryNameResponse.Body.builder()
                                 .success(false)
-                                .message(errorMessage)
+                                .message(errorMessage != null ? errorMessage : "Unknown error")
                                 .build())
                         .build();
             }
 
-            String jsonResponse = objectMapper.writeValueAsString(apiResponse);
+            String jsonResponse = JsonParserUtils.stringify(apiResponse);
+
             BeneficiaryNameResponse result = objectMapper.readValue(jsonResponse, BeneficiaryNameResponse.class);
 
             return result;

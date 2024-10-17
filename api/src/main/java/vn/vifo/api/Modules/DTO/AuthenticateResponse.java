@@ -1,6 +1,5 @@
 package vn.vifo.api.Modules.DTO;
 
-import org.springframework.http.HttpStatus;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -16,7 +15,7 @@ import vn.vifo.api.Ultils.JsonParserUtils;
 @Setter
 @Builder
 public class AuthenticateResponse {
-    private HttpStatus statusCode;
+    private String statusCode;
     private int httpCode;
     private Body body;
 
@@ -24,7 +23,7 @@ public class AuthenticateResponse {
     }
 @JsonCreator
     public AuthenticateResponse(
-            @JsonProperty("status_code") HttpStatus statusCode,
+            @JsonProperty("status_code") String statusCode,
             @JsonProperty("http_code") int httpCode,
             @JsonProperty("body") Body body) {
         this.statusCode = statusCode;

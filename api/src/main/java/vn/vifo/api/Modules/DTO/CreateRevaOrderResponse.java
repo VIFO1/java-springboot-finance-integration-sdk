@@ -1,6 +1,5 @@
 package vn.vifo.api.Modules.DTO;
 
-import org.springframework.http.HttpStatus;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -14,14 +13,14 @@ import vn.vifo.api.Ultils.JsonParserUtils;
 @Getter
 @Builder
 public class CreateRevaOrderResponse {
-    private HttpStatus statusCode;
+    private String statusCode;
     private Body body;
     private String errors;
     public CreateRevaOrderResponse(){}
 
     @JsonCreator
     public CreateRevaOrderResponse(
-            @JsonProperty("status_code") HttpStatus statusCode,
+            @JsonProperty("status_code") String statusCode,
             @JsonProperty("body") Body body,
             @JsonProperty("erros") String errors) 
     {

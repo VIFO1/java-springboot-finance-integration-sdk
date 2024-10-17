@@ -10,6 +10,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import vn.vifo.api.Interfaces.VifoApproveTransferMoneyInterface;
 import vn.vifo.api.Modules.DTO.ApproveTransferMoneyResponse;
 import vn.vifo.api.Ultils.HashingUtils;
+import vn.vifo.api.Ultils.HttpStatusUtils;
+import vn.vifo.api.Ultils.JsonParserUtils;
 
 public class VifoApproveTransferMoney implements VifoApproveTransferMoneyInterface {
     private VifoSendRequest sendRequest;
@@ -47,7 +49,7 @@ public class VifoApproveTransferMoney implements VifoApproveTransferMoneyInterfa
             if (statusCode == null || !statusCode.equals(HttpStatus.OK)) {
                 String message = (String) apiResponse.get("message");
                 return ApproveTransferMoneyResponse.builder()
-                        .statusCode(statusCode)
+                        .statusCode(HttpStatusUtils.getStatusMessage(statusCode))
                         .body(ApproveTransferMoneyResponse.Body.builder()
                                 .success(false)
                                 .message(message)
@@ -56,7 +58,7 @@ public class VifoApproveTransferMoney implements VifoApproveTransferMoneyInterfa
                         .build();
             }
 
-            String jsonResponse = objectMapper.writeValueAsString(apiResponse);
+            String jsonResponse = JsonParserUtils.stringify(apiResponse);
             ApproveTransferMoneyResponse approveTransferMoneyResponse = objectMapper.readValue(jsonResponse,
                     ApproveTransferMoneyResponse.class);
             return approveTransferMoneyResponse;

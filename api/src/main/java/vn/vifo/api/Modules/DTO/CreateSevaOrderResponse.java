@@ -1,6 +1,5 @@
 package vn.vifo.api.Modules.DTO;
 
-import org.springframework.http.HttpStatus;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -16,7 +15,7 @@ import vn.vifo.api.Ultils.JsonParserUtils;
 @Setter
 @Builder
 public class CreateSevaOrderResponse {
-    private HttpStatus statusCode;
+    private String statusCode;
     private Body body;
     private String errors;
     public CreateSevaOrderResponse() {
@@ -24,7 +23,7 @@ public class CreateSevaOrderResponse {
 
     @JsonCreator
     public CreateSevaOrderResponse(
-            @JsonProperty("status_code") HttpStatus statusCode,
+            @JsonProperty("status_code") String statusCode,
             @JsonProperty("body") Body body,
             @JsonProperty("errors") String errors
             ) {

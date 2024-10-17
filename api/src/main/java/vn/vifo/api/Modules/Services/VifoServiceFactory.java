@@ -3,7 +3,6 @@ package vn.vifo.api.Modules.Services;
 import java.util.HashMap;
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 
 import vn.vifo.api.Interfaces.QRTypeOrder;
 import vn.vifo.api.Interfaces.VifoServiceFactoryInterface;
@@ -132,12 +131,13 @@ public class VifoServiceFactory implements VifoServiceFactoryInterface {
             HashMap<String, Object> body) {
         HashMap<String, String> headers = this.getAuthorizationHeaders("admin");
         String requestSignature = this.approveTransferMoney.createSignature(body, secretKey, timestamp);
+        System.out.println(requestSignature);
         headers.put("x-request-timestamp", timestamp);
         headers.put("x-request-signature", requestSignature);
         ApproveTransferMoneyResponse response = this.approveTransferMoney.approveTransfers(secretKey, timestamp,
                 headers, body);
 
-        if (response.getStatusCode() == HttpStatus.OK) {
+        if (response.getStatusCode().contains("200")) {
             return ApproveTransferMoneyResponse.builder()
                     .statusCode(response.getStatusCode())
                     .body(response.getBody())
@@ -149,7 +149,7 @@ public class VifoServiceFactory implements VifoServiceFactoryInterface {
     public OtherRequestResponse processOtherRequest(String key) {
         HashMap<String, String> headers = this.getAuthorizationHeaders("user");
         OtherRequestResponse response = this.otherRequest.checkOrderStatus(headers, key);
-        if (response.getStatusCode() == HttpStatus.OK) {
+        if (response.getStatusCode().contains("200")) {
             return OtherRequestResponse.builder()
                     .statusCode(response.getStatusCode())
                     .body(response.getBody())
@@ -257,7 +257,7 @@ public class VifoServiceFactory implements VifoServiceFactoryInterface {
         body.put("qr_type", qrType);
         body.put("end_date", endDate);
         CreateSevaOrderResponse response = this.orderSeva.createSevaOrder(headers, body);
-        if (response.getStatusCode() == HttpStatus.CREATED) {
+        if (response.getStatusCode().contains("201")) {
             return CreateSevaOrderResponse.builder()
                     .statusCode(response.getStatusCode())
                     .body(response.getBody())

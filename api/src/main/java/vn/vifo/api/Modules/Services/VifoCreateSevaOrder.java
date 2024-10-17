@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import vn.vifo.api.Interfaces.VifoCreateSevaOrderInterface;
 import vn.vifo.api.Modules.DTO.CreateSevaOrderResponse;
 import vn.vifo.api.Ultils.HashingUtils;
+import vn.vifo.api.Ultils.HttpStatusUtils;
 
 public class VifoCreateSevaOrder implements VifoCreateSevaOrderInterface {
     private VifoSendRequest sendRequest;
@@ -36,7 +37,7 @@ public class VifoCreateSevaOrder implements VifoCreateSevaOrderInterface {
             String errorsResponse = (String) apiResponse.get("errors");
             if (!statusCode.equals(HttpStatus.CREATED)) {
                 return CreateSevaOrderResponse.builder()
-                        .statusCode(statusCode)
+                        .statusCode(HttpStatusUtils.getStatusMessage(statusCode))
                         .errors(errorsResponse)
                         .build();
             }

@@ -10,6 +10,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import vn.vifo.api.Interfaces.VifoAutheticateInterface;
 import vn.vifo.api.Modules.DTO.AuthenticateResponse;
+import vn.vifo.api.Ultils.HttpStatusUtils;
+import vn.vifo.api.Ultils.JsonParserUtils;
 
 public class VifoAuthenticate implements VifoAutheticateInterface {
     private VifoSendRequest sendRequest;
@@ -58,18 +60,17 @@ public class VifoAuthenticate implements VifoAutheticateInterface {
         try {
             HashMap<String, Object> apiResponse = this.sendRequest.sendRequest("POST", endpoint, headers, body);
 
-            HttpStatus httpStatusCode = (HttpStatus) apiResponse.get("status_code");
-
-            if (httpStatusCode == null || !httpStatusCode.equals(HttpStatus.OK)) {
+            HttpStatus statusCode = (HttpStatus) apiResponse.get("status_code");
+            if (statusCode == null || !statusCode.equals(HttpStatus.OK)) {
                 String errorMessage = (String) apiResponse.get("errors");
                 return AuthenticateResponse.builder()
-                        .statusCode(httpStatusCode)
+                        .statusCode(HttpStatusUtils.getStatusMessage(statusCode))
                         .body(AuthenticateResponse.Body.builder()
                                 .message("Error: " + errorMessage)
                                 .build())
                         .build();
             }
-            String jsonResponse = objectMapper.writeValueAsString(apiResponse);
+            String jsonResponse = JsonParserUtils.stringify(apiResponse);
             AuthenticateResponse authenticateResponse = objectMapper.readValue(jsonResponse,
                     AuthenticateResponse.class);
             return authenticateResponse;

@@ -10,7 +10,6 @@ import vn.vifo.api.Ultils.JsonParserUtils;
 
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
@@ -18,11 +17,11 @@ import org.springframework.http.HttpStatus;
 @Builder
 public class BankResponse {
     private Body body;
-    private HttpStatus statusCode;
+    private String statusCode;
     private int httpCode;
     @JsonCreator
     public BankResponse(@JsonProperty("body") Body body,
-                        @JsonProperty("status_code") HttpStatus statusCode,
+                        @JsonProperty("status_code") String statusCode,
                         @JsonProperty("http_code") int httpCode ) {
         this.body = body;
         this.statusCode = statusCode;

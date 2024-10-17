@@ -1,7 +1,6 @@
 package vn.vifo.api.Interfaces;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import vn.vifo.api.Modules.DTO.ApproveTransferMoneyResponse;
 import vn.vifo.api.Modules.DTO.AuthenticateResponse;

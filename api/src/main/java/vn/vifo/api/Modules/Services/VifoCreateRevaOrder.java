@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import vn.vifo.api.Interfaces.VifoCreateRevaOrderInterface;
 import vn.vifo.api.Modules.DTO.CreateRevaOrderResponse;
 import vn.vifo.api.Ultils.HashingUtils;
+import vn.vifo.api.Ultils.HttpStatusUtils;
 
 public class VifoCreateRevaOrder implements VifoCreateRevaOrderInterface {
     private VifoSendRequest sendRequest;
@@ -55,7 +56,7 @@ public class VifoCreateRevaOrder implements VifoCreateRevaOrderInterface {
             String errorsResponse = (String) apiResponse.get("errors");
             if (!statusCode.equals(HttpStatus.CREATED)) {
                 return CreateRevaOrderResponse.builder()
-                        .statusCode(statusCode)
+                        .statusCode(HttpStatusUtils.getStatusMessage(statusCode))
                         .errors(errorsResponse)
                         .build();
             }
