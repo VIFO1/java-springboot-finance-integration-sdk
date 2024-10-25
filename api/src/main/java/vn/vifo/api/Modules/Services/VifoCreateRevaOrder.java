@@ -10,45 +10,54 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import vn.vifo.api.Interfaces.VifoCreateRevaOrderInterface;
 import vn.vifo.api.Modules.DTO.CreateRevaOrderResponse;
-import vn.vifo.api.Ultils.HashingUtils;
 import vn.vifo.api.Ultils.HttpStatusUtils;
 import vn.vifo.api.Ultils.JsonParserUtils;
 
 public class VifoCreateRevaOrder implements VifoCreateRevaOrderInterface {
     private VifoSendRequest sendRequest;
-    private HashingUtils hashingUtils;
     private ObjectMapper objectMapper;
 
     public VifoCreateRevaOrder(VifoSendRequest sendRequest) {
         this.sendRequest = sendRequest;
-        this.hashingUtils = new HashingUtils();
         this.objectMapper = new ObjectMapper();
     }
 
-    public List<String> validateRequiredFields(String fullname, String distributorOrderNumber, String phone,
-            int finalAmount) {
+    public List<String> validateRevaOrder(HashMap<String, String> headers, HashMap<String, Object> body) {
         List<String> errors = new ArrayList<>();
-        if (fullname == null || fullname.isEmpty()) {
-            errors.add("fullname cannot be null or empty.");
+
+        if (headers == null || headers.isEmpty()) {
+            errors.add("headers must not be empty");
         }
-        if (distributorOrderNumber == null || distributorOrderNumber.isEmpty()) {
-            errors.add("distributor_order_number cannot be null or empty.");
-        }
-        if (phone == null || phone.isEmpty()) {
-            errors.add("phone cannot be null or empty.");
-        }
-        if (finalAmount <= 0) {
-            errors.add("final_amount must be greater than 0.");
+        if (body == null || body.isEmpty()) {
+            errors.add("body must not be empty");
+        } else {
+            String[] requiredFields = {
+                    "product_code",
+                    "distributor_order_number",
+                    "phone",
+                    "fullname",
+                    "final_amount",
+                    "benefiary_account_name",
+                    "comment",
+            };
+
+            for (String field : requiredFields) {
+                if (!body.containsKey(field) || body.get(field) == null
+                        || body.get(field).toString().trim().isEmpty()) {
+                    errors.add(field + " is required and cannot be empty.");
+                }
+            }
         }
         return errors;
     }
 
     public CreateRevaOrderResponse createRevaOrder(HashMap<String, String> headers, HashMap<String, Object> body) {
         String endpoint = "/v2/finance";
-        List<String> errors = this.hashingUtils.validateCreateOrder(headers, body);
+        List<String> errors = this.validateRevaOrder(headers, body);
         if (!errors.isEmpty()) {
             return CreateRevaOrderResponse.builder()
-                    .errors(String.join(",", errors))
+                    .statusCode("400")
+                    .errors(String.join(" ", errors))
                     .build();
         }
         try {

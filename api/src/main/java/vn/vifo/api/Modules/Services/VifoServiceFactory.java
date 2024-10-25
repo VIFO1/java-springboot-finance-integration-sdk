@@ -1,8 +1,6 @@
 package vn.vifo.api.Modules.Services;
 
 import java.util.HashMap;
-import java.util.List;
-
 
 import vn.vifo.api.Interfaces.QRTypeOrder;
 import vn.vifo.api.Interfaces.VifoServiceFactoryInterface;
@@ -180,8 +178,7 @@ public class VifoServiceFactory implements VifoServiceFactoryInterface {
 
     public CreateRevaOrderResponse createRevaOrder(
             String fullname,
-            String beneficiaryBankCode,
-            String beneficiaryAccountNo,
+            String benefiaryAccountName,
             String productCode,
             String distributorOrderNumber,
             String phone,
@@ -192,14 +189,12 @@ public class VifoServiceFactory implements VifoServiceFactoryInterface {
             boolean bankDetail,
             QRTypeOrder qrType,
             String endDate
-
     ) {
         HashMap<String, String> headers = this.getAuthorizationHeaders("user");
         HashMap<String, Object> body = new HashMap<>();
         String actualProductCodeReva = (productCode == null || productCode.isEmpty()) ? "REVAVF240101" : productCode;
         body.put("fullname", fullname);
-        body.put("benefiary_bank_code", beneficiaryAccountNo);
-        body.put("benefiary_account_no", beneficiaryAccountNo);
+        body.put("benefiary_account_name", benefiaryAccountName);
         body.put("product_code", actualProductCodeReva);
         body.put("distributor_order_number", distributorOrderNumber);
         body.put("phone", phone);
@@ -211,50 +206,41 @@ public class VifoServiceFactory implements VifoServiceFactoryInterface {
         body.put("qr_type", qrType);
         body.put("end_date", endDate);
 
-        List<String> errors = this.orderReva.validateRequiredFields(fullname, distributorOrderNumber, phone,
-                finalAmount);
-        if (!errors.isEmpty()) {
+        CreateRevaOrderResponse response = this.orderReva.createRevaOrder(headers, body);
+        if (response.getStatusCode().contains("201")) {
             return CreateRevaOrderResponse.builder()
-                    .errors(String.join("", errors))
+                    .statusCode(response.getStatusCode())
+                    .body(response.getBody())
                     .build();
         }
-
-        CreateRevaOrderResponse response = this.orderReva.createRevaOrder(headers, body);
         return response;
     }
 
     public CreateSevaOrderResponse createSevaOrder(
+            String productCode,
+            String phone,
             String fullname,
+            int finalAmount,
+            String distributorOrderNumber,
             String beneficiaryBankCode,
             String beneficiaryAccountNo,
-            String productCode,
-            String distributorOrderNumber,
-            String phone,
-            String email,
-            String address,
-            int finalAmount,
             String comment,
-            boolean bankDetail,
-            QRTypeOrder qrType,
-            String endDate
+            String sourceAccountNo
 
     ) {
         HashMap<String, String> headers = this.getAuthorizationHeaders("user");
         HashMap<String, Object> body = new HashMap<>();
         String actualProductCodeReva = (productCode == null || productCode.isEmpty()) ? "SEVAVF240101" : productCode;
+        body.put("product_code", actualProductCodeReva);
+        body.put("phone", phone);
         body.put("fullname", fullname);
+        body.put("final_amount", finalAmount);
+        body.put("distributor_order_number", distributorOrderNumber);
         body.put("benefiary_bank_code", beneficiaryBankCode);
         body.put("benefiary_account_no", beneficiaryAccountNo);
-        body.put("product_code", actualProductCodeReva);
-        body.put("distributor_order_number", distributorOrderNumber);
-        body.put("phone", phone);
-        body.put("email", email);
-        body.put("address", address);
-        body.put("final_amount", finalAmount);
         body.put("comment", comment);
-        body.put("bank_detail", bankDetail);
-        body.put("qr_type", qrType);
-        body.put("end_date", endDate);
+        body.put("source account no", sourceAccountNo);
+
         CreateSevaOrderResponse response = this.orderSeva.createSevaOrder(headers, body);
         if (response.getStatusCode().contains("201")) {
             return CreateSevaOrderResponse.builder()

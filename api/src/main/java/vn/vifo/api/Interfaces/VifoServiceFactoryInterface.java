@@ -29,7 +29,7 @@ public interface VifoServiceFactoryInterface {
         public TransferMoneyResponse executeMoneyTransfer(HashMap<String, Object> body);
 
         public ApproveTransferMoneyResponse approveMoneyTransfer(String secretKey, String timestamp,
-        HashMap<String, Object> body);
+                        HashMap<String, Object> body);
 
         public OtherRequestResponse processOtherRequest(String key);
 
@@ -40,8 +40,7 @@ public interface VifoServiceFactoryInterface {
 
         public CreateRevaOrderResponse createRevaOrder(
                         String fullname,
-                        String beneficiaryBankCode,
-                        String beneficiaryAccountNo,
+                        String benefiaryAccountName,
                         String productCode,
                         String distributorOrderNumber,
                         String phone,
@@ -51,24 +50,17 @@ public interface VifoServiceFactoryInterface {
                         String comment,
                         boolean bankDetail,
                         QRTypeOrder qrType,
-                        String endDate
-
-        );
+                        String endDate);
 
         public CreateSevaOrderResponse createSevaOrder(
+                        String productCode,
+                        String phone,
                         String fullname,
+                        int finalAmount,
+                        String distributorOrderNumber,
                         String beneficiaryBankCode,
                         String beneficiaryAccountNo,
-                        String productCode,
-                        String distributorOrderNumber,
-                        String phone,
-                        String email,
-                        String address,
-                        int finalAmount,
                         String comment,
-                        boolean bankDetail,
-                        QRTypeOrder qrType,
-                        String endDate
-
-        );
+                        String sourceAccountNo
+                        );
 }
