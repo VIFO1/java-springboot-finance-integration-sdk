@@ -239,7 +239,7 @@ public class VifoServiceFactory implements VifoServiceFactoryInterface {
         body.put("benefiary_bank_code", beneficiaryBankCode);
         body.put("benefiary_account_no", beneficiaryAccountNo);
         body.put("comment", comment);
-        body.put("source account no", sourceAccountNo);
+        body.put("source_account_no", sourceAccountNo);
 
         CreateSevaOrderResponse response = this.orderSeva.createSevaOrder(headers, body);
         if (response.getStatusCode().contains("201")) {
