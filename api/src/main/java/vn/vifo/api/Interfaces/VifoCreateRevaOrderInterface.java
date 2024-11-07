@@ -7,8 +7,7 @@ import java.util.List;
 
 public interface VifoCreateRevaOrderInterface {
 
-    public List<String> validateRequiredFields(String fullname, String distributorOrderNumber, String phone,
-            int finalAmount);
+    public List<String> validateRevaOrder(HashMap<String, String> headers, HashMap<String, Object> body);
 
     public CreateRevaOrderResponse createRevaOrder(HashMap<String, String> headers, HashMap<String, Object> body);
 }

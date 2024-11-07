@@ -53,35 +53,30 @@ WebhookResponse bank = vifoServiceFactory.convertObjectToWebhookResponse(jsonObj
 
 12.Create Reva Order:
 CreateRevaOrderResponse createRevaOrder = vifoServiceFactory.createRevaOrder(
-            String fullname,
-            String beneficiaryBankCode,
-            String beneficiaryAccountNo,
-            String productCode,
-            String distributorOrderNumber,
-            String phone,
-            String email,
-            String address,
-            int finalAmount,
-            String comment,
-            boolean bankDetail,
-            QRTypeOrder qrType,
-            String endDate
+                String fullname,
+                String benefiaryAccountName,
+                String productCode,
+                String distributorOrderNumber,
+                String phone,
+                String email,
+                String address,
+                int finalAmount,
+                String comment,
+                boolean bankDetail,
+                QRTypeOrder qrType,
+                String endDate
 )
 
 13.Create Seva Order:
 CreateSevaOrderResponse createSevaOrder = vifoServiceFactory.createSevaOrder(
-            String fullname,
-            String beneficiaryBankCode,
-            String beneficiaryAccountNo,
-            String productCode,
-            String distributorOrderNumber,
-            String phone,
-            String email,
-            String address,
-            int finalAmount,
-            String comment,
-            boolean bankDetail,
-            QRTypeOrder qrType,
-            String endDate
+                String productCode,
+                String phone,
+                String fullname,
+                int finalAmount,
+                String distributorOrderNumber,
+                String beneficiaryBankCode,
+                String beneficiaryAccountNo,
+                String comment,
+                String sourceAccountNo
 )
 

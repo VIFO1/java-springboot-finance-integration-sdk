@@ -21,7 +21,6 @@ public class VifoServiceFactoryTest {
 
         ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
         VifoServiceFactory vifoServiceFactory = context.getBean(VifoServiceFactory.class);
-
         AuthenticateResponse test = vifoServiceFactory.performUserAuthentication("", "");
         System.out.println(test);
     }
